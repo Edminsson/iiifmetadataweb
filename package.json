@@ -23,6 +23,9 @@
     "jquery-plugins": "edsilv/jquery-plugins",
     "iiif-metadata-component": "viewdir/iiif-metadata-component#v1.0.1",
     "manifesto": "viewdir/manifesto#v0.3.0",
-    "manifold": "viewdir/manifold#v1.1.9"    
+    "manifold": "viewdir/manifold#v1.1.9"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1"
   }
 }
