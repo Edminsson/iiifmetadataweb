@@ -5,7 +5,7 @@
 
   "label":"Book 1",
   "metadata": [
-    {"label":"Author", "value":"Anne Author"},
+    {"label":"Author", "value":"The Archivist"},
 
     {"label": [
         {"@value": "Arkiv", "@language": "sv" }, 
@@ -19,11 +19,11 @@
 
     {"label":"Extra", "value": [
         {"@value": "Svenskt arkiv", "@language":"sv"},
-        {"@value": "Swedish record", "@language":"en-GB"}
+        {"@value": "Swedish archive", "@language":"en-GB"}
         ]
     }
   ],
-  "description":"A longer description of this example book. It should give some real information.",
+  "description":"A longer description of this example archive. It should give some real information.",
   "license":"http://www.example.org/license.html",
   "attribution":"Provided by Example Organization",
   "service": {
