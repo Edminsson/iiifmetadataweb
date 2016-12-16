@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>iiif-metadata-component</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="node_modules/iiif-metadata-component/dist//iiif-metadata-component.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsviews/0.9.75/jsviews.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/3.2.2/es6-promise.min.js"></script>
+    <script src="node_modules/base-component/dist/base-component.bundle.js"></script>
+    <script src="node_modules/manifold/dist/manifold.bundle.js"></script>
+    <script src="node_modules/iiif-metadata-component/dist/iiif-metadata-component.js"></script>
+    <script src="node_modules/jquery-plugins/dist/jquery-plugins.js"></script>
+    <script src="node_modules/utils/dist/utils.js"></script>
+    <script src="js/sanitize.js"></script>
+</head>
+<body>
+
+    <div>
+        <span>Manifest url:</span>
+        <input id="manifesturl" type="text" style="width:400px">
+        <span>Locale:</span>
+        <input id="locale" type="text" style="width:40px">
+        <button id="setmanifest">Set</button>
+    </div>
+    
+    <div id="metadata" class="iiif-metadata-component">
+        loading...
+    </div>
+
+    <script>
+
+        var helper, component;
+        
+        $(function() {
+
+            $('#setmanifest').on('click', function() {
+                var currentManifestUrl = $('#manifesturl').val();
+                var currentLocale = $('#locale').val();
+                loadManifest(currentManifestUrl, currentLocale);
+            })
+            
+            function loadManifest(manifestUrl, locale) {
+                Manifold.loadManifest({
+                    iiifResourceUri: manifestUrl,
+                    collectionIndex: 0,
+                    manifestIndex: 0,
+                    locale: locale
+                }).then(function(h){
+                    
+                    helper = h;
+                    
+                    component = new IIIFComponents.MetadataComponent({
+                        canvasDisplayOrder: "attribution, title",
+                        canvases: [helper.getCanvasByIndex(0), helper.getCanvasByIndex(1)],
+                        canvasLabels: "Left page, Right page",
+                        canvasExclude: "attribution",
+                        copyToClipboardEnabled: false,
+                        element: "#metadata",
+                        helper: h,
+                        limitType: IIIFComponents.MetadataComponentOptions.LimitType.LINES,
+                        manifestDisplayOrder: "attribution, publication date, license, title",
+                        manifestExclude: "license, attribution",
+                        range: helper.getRanges()[0],
+                        sanitizer: function(html) {
+                            var elem = document.createElement('div');
+                            var $elem = $(elem);
+                            $elem.html(html);
+
+                            var s = new Sanitize({
+                                elements:   ['a', 'b', 'br', 'img', 'p', 'i', 'span'],
+                                attributes: {
+                                    a: ['href'],
+                                    img: ['src', 'alt']
+                                },
+                                protocols:  {
+                                    a: { href: ['http', 'https'] }
+                                }
+                            });
+
+                            $elem.html(s.clean_node(elem));
+
+                            return $elem.html();
+                        },
+                        showAllLanguages: false
+                    });
+
+                    component.databind();
+
+                }).catch(function(e) {
+                    console.error(e);
+                });
+
+            }
+
+            //var defaultManifestUrl ='http://iiif.bodleian.ox.ac.uk/iiif/manifest/60834383-7146-41ab-bfe1-48ee97bc04be.json';
+            //var defaultManifestUrl ='https://tomcrane.github.io/scratch/manifests/vdc_100000004987.0x000001.json';
+            var defaultManifestUrl ='manifest1.json';
+            var defaultLocale = "en";
+            $('#manifesturl').val(defaultManifestUrl);
+            $('#locale').val(defaultLocale);
+
+            loadManifest(defaultManifestUrl, defaultLocale);
+
+
+        });
+
+    </script>
+
+</body>
+</html>

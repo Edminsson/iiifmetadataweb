@@ -1,0 +1,28 @@
+{
+  "name": "iiifmetadataweb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Edminsson/iiifmetadataweb.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Edminsson/iiifmetadataweb/issues"
+  },
+  "homepage": "https://github.com/Edminsson/iiifmetadataweb#readme",
+  "dependencies": {
+    "base-component": "viewdir/base-component",
+    "utils": "edsilv/utils",
+    "jquery-plugins": "edsilv/jquery-plugins",
+    "iiif-metadata-component": "viewdir/iiif-metadata-component#v1.0.1",
+    "manifesto": "viewdir/manifesto#v0.3.0",
+    "manifold": "viewdir/manifold#v1.1.9"    
+  }
+}
