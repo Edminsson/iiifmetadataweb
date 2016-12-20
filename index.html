@@ -37,78 +37,77 @@
 
         var helper, component;
         
+        function setManifest() {
+            //var defaultManifestUrl ='http://iiif.bodleian.ox.ac.uk/iiif/manifest/60834383-7146-41ab-bfe1-48ee97bc04be.json';
+            //var defaultManifestUrl ='https://tomcrane.github.io/scratch/manifests/vdc_100000004987.0x000001.json';
+            var defaultManifestUrl ='manifest1.json';
+            var manifestUrl = $('#manifesturl').val() ? $('#manifesturl').val() : defaultManifestUrl;
+            var locale = $('#locale').val();
+            $('#manifesturl').val(manifestUrl);
+
+            Manifold.loadManifest({
+                iiifResourceUri: manifestUrl,
+                collectionIndex: 0,
+                manifestIndex: 0,
+                locale: locale
+            }).then(function(h){
+                
+                helper = h;
+                
+                component = new IIIFComponents.MetadataComponent({
+                    canvasDisplayOrder: "attribution, title",
+                    canvases: [helper.getCanvasByIndex(0), helper.getCanvasByIndex(1)],
+                    canvasLabels: "Left page, Right page",
+                    canvasExclude: "attribution",
+                    copyToClipboardEnabled: false,
+                    element: "#metadata",
+                    helper: h,
+                    limitType: IIIFComponents.MetadataComponentOptions.LimitType.LINES,
+                    manifestDisplayOrder: "attribution, publication date, license, title",
+                    manifestExclude: "license, attribution",
+                    range: helper.getRanges()[0],
+                    sanitizer: function(html) {
+                        var elem = document.createElement('div');
+                        var $elem = $(elem);
+                        $elem.html(html);
+
+                        var s = new Sanitize({
+                            elements:   ['a', 'b', 'br', 'img', 'p', 'i', 'span'],
+                            attributes: {
+                                a: ['href'],
+                                img: ['src', 'alt']
+                            },
+                            protocols:  {
+                                a: { href: ['http', 'https'] }
+                            }
+                        });
+
+                        $elem.html(s.clean_node(elem));
+
+                        return $elem.html();
+                    },
+                    showAllLanguages: false
+                });
+
+                component.databind();
+
+            }).catch(function(e) {
+                console.error(e);
+            });
+
+        }
+
         $(function() {
 
             $('#setmanifest').on('click', function() {
-                loadManifest();
+                setManifest();
             })
             
             $('#locale').on('change', function() {
-                loadManifest();
+                setManifest();
             })
             
-            function loadManifest() {
-                //var defaultManifestUrl ='http://iiif.bodleian.ox.ac.uk/iiif/manifest/60834383-7146-41ab-bfe1-48ee97bc04be.json';
-                //var defaultManifestUrl ='https://tomcrane.github.io/scratch/manifests/vdc_100000004987.0x000001.json';
-                var defaultManifestUrl ='manifest1.json';
-                var manifestUrl = $('#manifesturl').val() ? $('#manifesturl').val() : defaultManifestUrl;
-                var locale = $('#locale').val();
-                $('#manifesturl').val(manifestUrl);
-
-                Manifold.loadManifest({
-                    iiifResourceUri: manifestUrl,
-                    collectionIndex: 0,
-                    manifestIndex: 0,
-                    locale: locale
-                }).then(function(h){
-                    
-                    helper = h;
-                    
-                    component = new IIIFComponents.MetadataComponent({
-                        canvasDisplayOrder: "attribution, title",
-                        canvases: [helper.getCanvasByIndex(0), helper.getCanvasByIndex(1)],
-                        canvasLabels: "Left page, Right page",
-                        canvasExclude: "attribution",
-                        copyToClipboardEnabled: false,
-                        element: "#metadata",
-                        helper: h,
-                        limitType: IIIFComponents.MetadataComponentOptions.LimitType.LINES,
-                        manifestDisplayOrder: "attribution, publication date, license, title",
-                        manifestExclude: "license, attribution",
-                        range: helper.getRanges()[0],
-                        sanitizer: function(html) {
-                            var elem = document.createElement('div');
-                            var $elem = $(elem);
-                            $elem.html(html);
-
-                            var s = new Sanitize({
-                                elements:   ['a', 'b', 'br', 'img', 'p', 'i', 'span'],
-                                attributes: {
-                                    a: ['href'],
-                                    img: ['src', 'alt']
-                                },
-                                protocols:  {
-                                    a: { href: ['http', 'https'] }
-                                }
-                            });
-
-                            $elem.html(s.clean_node(elem));
-
-                            return $elem.html();
-                        },
-                        showAllLanguages: false
-                    });
-
-                    component.databind();
-
-                }).catch(function(e) {
-                    console.error(e);
-                });
-
-            }
-
-            loadManifest();
-
+            setManifest();
 
         });
 
